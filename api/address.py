@@ -3,7 +3,7 @@ from fastapi.params import Depends
 from sqlalchemy.orm import Session
 from models import Address
 from schemas import AddressSchema, CreateAddressSchema
-from geopy.distance import geodesic
+from services import get_address_by_distance
 from core.db import get_db
 import core.messages as message
 from core.response import ResponseInfo
@@ -94,15 +94,9 @@ def get_addresses_within_distance(
         
     addresses = db.query(Address).all()
     
-    addresses_within_distance = list(
-        map(
-            lambda address: address.to_json(),
-            filter(
-                lambda address: geodesic((latitude, longitude), (address.latitude, address.longitude)).km <= distance,
-                addresses
-            )
-        )
-    )
+    #call function for get list of addresses using distance and co-ordinates.
+    addresses_within_distance = get_address_by_distance(distance=distance, latitude=latitude, 
+                                                        longitude=longitude, addresses=addresses)
 
     response = ResponseInfo(data=addresses_within_distance, status_code=status.HTTP_200_OK, 
                         message=message.SUCCESS)
