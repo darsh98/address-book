@@ -6,7 +6,11 @@
 python -m venv venv
 
 # activa virtual enviorment
-cd venv/Script/activate
+for windows
+cd venv/Scripts/activate
+
+for ubuntu
+source venv/bin/activate    
 
 # install requirement.txt
 pip install requirement.txt
